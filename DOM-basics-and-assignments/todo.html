@@ -1,0 +1,73 @@
+<html>
+  <head></head>
+
+  <style></style>
+  <body>
+    <span>
+      Enter the task
+      <input type="text" placeholder="Task Name" id="task-name" /><br /><br />
+      Enter the task description
+      <input
+        type="text"
+        placeholder="Task description"
+        id="task-desc"
+      /><br /><br />
+    </span>
+    <button type="button" onclick="addToTask()">Add Task</button>
+    <div id="task-summary"></div>
+    <script>
+      let id = 1;
+      const updateTasks = async () => {
+        const data = await fetch(`http://localhost:3008/dom/gettodos`);
+        const res = await data.json();
+
+        res.todos.forEach((task) => {
+          const outerDiv = document.createElement("div");
+
+          const titleDiv = document.createElement("div");
+          titleDiv.innerHTML = task.title;
+
+          const descriptionDiv = document.createElement("div");
+          descriptionDiv.innerHTML = task.description;
+
+          const buttonDiv = document.createElement("div");
+          buttonDiv.innerHTML = `<button type="button" id="mark-as-done">Mark as done</button>`;
+
+          outerDiv.setAttribute("id", id++);
+          outerDiv.appendChild(titleDiv);
+          outerDiv.appendChild(descriptionDiv);
+          outerDiv.appendChild(buttonDiv);
+
+          document.getElementById("task-summary").appendChild(outerDiv);
+        });
+      };
+
+      updateTasks();
+
+      const addToTask = () => {
+        const taskTitle = document.getElementById("task-name").value;
+        const taskDescription = document.getElementById("task-desc").value;
+
+        const outerDiv = document.createElement("div");
+
+        const titleDiv = document.createElement("div");
+        titleDiv.innerHTML = taskTitle;
+
+        const descriptionDiv = document.createElement("div");
+        descriptionDiv.innerHTML = taskDescription;
+
+        const buttonDiv = document.createElement("div");
+        buttonDiv.innerHTML = `<button type="button" onclick="getTaskDone(${id})" id="mark-as-done">Mark as done</button>`;
+
+        outerDiv.setAttribute("id", id++);
+        outerDiv.appendChild(titleDiv);
+        outerDiv.appendChild(descriptionDiv);
+        outerDiv.appendChild(buttonDiv);
+        document.getElementById("task-summary").appendChild(outerDiv);
+      };
+      const getTaskDone = (id) => {
+        document.getElementById(id).children[2].innerHTML = "Done";
+      };
+    </script>
+  </body>
+</html>

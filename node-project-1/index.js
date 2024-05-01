@@ -3,10 +3,44 @@ const bodyParser = require("body-parser");
 
 const app = express();
 const port = 3001;
+let requestCounter = 0;
+let time = 0;
+let beforeTime = 0;
+let afterTime = 0;
+let avg = 0;
 
 app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({ extended: false }));
+
+const getBeforeTime = (req, res, next) => {
+  const date = new Date();
+  beforeTime = date.getTime();
+  next();
+};
+
+const getAfterTime = (req, res, next) => {
+  const date = new Date();
+  AfterTime = date.getTime();
+  next();
+};
+
+//Create an application level middleware to count the number of requests coming in
+const getNumberOfRequest = (req, res, next) => {
+  requestCounter = requestCounter + 1;
+  next();
+};
+
+app.use(getNumberOfRequest, (req, res, next) => {
+  const d1 = new Date();
+  beforeTime = d1.getTime();
+  console.log(`Total number of requests- ${requestCounter}`);
+  next();
+  const d2 = new Date();
+  afterTime = d2.getTime();
+  time = time + (AfterTime - beforeTime);
+  avg = time / requestCounter;
+});
 
 const findPatient = (name, data) => {
   return data.filter((userData) => {
@@ -33,6 +67,22 @@ const users = [
     ],
   },
 ];
+
+//Middleware Examples -firstMiddleware
+const firstMiddleware = (req, res, next) => {
+  console.log("Inside First Middleware==========================>");
+  if (true) {
+    next();
+  }
+};
+
+//Middleware Examples -secondMiddleware
+const secondMiddleware = (req, res, next) => {
+  console.log("Inside Second Middleware==========================>");
+  if (true) {
+    next();
+  }
+};
 
 //Get Request
 //Example of request param
@@ -66,6 +116,11 @@ app.get("/kidney-status/:patient", (req, res) => {
         totalKidneys,
         totalhealthyKidneys,
         totalunhealthyKidneys,
+        requestCounter,
+        beforeTime,
+        afterTime,
+        time,
+        avg,
       });
     } else {
       res.status(400).send({
@@ -93,6 +148,11 @@ app.post("/add/kidney", (req, res) => {
       res.status(200).send({
         status: "success",
         data: users,
+        requestCounter,
+        beforeTime,
+        afterTime,
+        time,
+        avg,
       });
     } else {
       res.status(400).send({
@@ -122,6 +182,11 @@ app.put("/kidney/detox", (req, res) => {
       res.status(200).send({
         status: "success",
         data: foundPatient,
+        requestCounter,
+        beforeTime,
+        afterTime,
+        time,
+        avg,
       });
     } else {
       res.status(400).send({
@@ -155,6 +220,11 @@ app.delete("/complete/detox", (req, res) => {
       res.status(200).send({
         status: "success",
         data: foundPatient,
+        requestCounter,
+        beforeTime,
+        afterTime,
+        time,
+        avg,
       });
     } else {
       res.status(400).send({
@@ -168,6 +238,17 @@ app.delete("/complete/detox", (req, res) => {
       error: "unknown error occurred",
     });
   }
+});
+
+//MiddleWare Example
+app.get("/name", firstMiddleware, secondMiddleware, (req, res) => {
+  res.json({
+    requestCounter,
+    beforeTime,
+    afterTime,
+    time,
+    avg,
+  });
 });
 
 app.listen(port, () => {

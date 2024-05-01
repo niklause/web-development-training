@@ -1,0 +1,31 @@
+<html>
+  <head></head>
+  <script>
+    const getSum = async () => {
+      let desiredText = "";
+      const digit1 = document.getElementById("digit-1").value || 0;
+      const digit2 = document.getElementById("digit-2").value || 0;
+      const data = await fetch(
+        `http://localhost:3008/dom/getsum?digit1=${digit1}&digit2=${digit2}`
+      );
+      const res = await data.json();
+      const result = res.sum;
+      if (result) {
+        desiredText = `Sum of ${digit1} & ${digit2} is ${result}`;
+      } else {
+        desiredText = `API failed`;
+      }
+      document.getElementById("result").innerHTML = desiredText;
+    };
+  </script>
+  <body>
+    <span>
+      Enter Digit 1
+      <input type="text" placeholder="digit-1" id="digit-1" /><br /><br />
+      Enter Digit 2
+      <input type="text" placeholder="digit-2" id="digit-2" /><br /><br />
+    </span>
+    <button type="button" onclick="getSum()">Calculate</button><br /><br />
+    <div id="result"></div>
+  </body>
+</html>

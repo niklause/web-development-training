@@ -3,16 +3,17 @@ const adminMiddleware = require("../middleware/admin");
 const router = Router();
 
 // Admin Routes
-router.post('/signup', (req, res) => {
-    // Implement admin signup logic
-});
 
-router.post('/courses', adminMiddleware, (req, res) => {
-    // Implement course creation logic
-});
+router.route("/signup").post(adminMiddleware.adminSignup);
 
-router.get('/courses', adminMiddleware, (req, res) => {
-    // Implement fetching all courses logic
-});
+router.route("/signin").post(adminMiddleware.adminSignin);
+
+router
+  .route("/add-course")
+  .post(adminMiddleware.adminVerification, adminMiddleware.addCourse);
+
+router
+  .route("/courses")
+  .get(adminMiddleware.adminVerification, adminMiddleware.getCourses);
 
 module.exports = router;

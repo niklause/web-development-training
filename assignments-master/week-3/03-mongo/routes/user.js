@@ -3,20 +3,26 @@ const router = Router();
 const userMiddleware = require("../middleware/user");
 
 // User Routes
-router.post('/signup', (req, res) => {
-    // Implement user signup logic
-});
+router.post("/signup", userMiddleware.userSignUp);
 
-router.get('/courses', (req, res) => {
-    // Implement listing all courses logic
-});
+router.post("/signin", userMiddleware.userSignIn);
 
-router.post('/courses/:courseId', userMiddleware, (req, res) => {
-    // Implement course purchase logic
-});
+router.get(
+  "/courses",
+  userMiddleware.userVerification,
+  userMiddleware.availableCourses
+);
 
-router.get('/purchasedCourses', userMiddleware, (req, res) => {
-    // Implement fetching purchased courses logic
-});
+router.post(
+  "/courses/:courseId",
+  userMiddleware.userVerification,
+  userMiddleware.purchaseCourse
+);
 
-module.exports = router
+router.get(
+  "/purchasedCourses",
+  userMiddleware.userVerification,
+  userMiddleware.purchasedCourses
+);
+
+module.exports = router;

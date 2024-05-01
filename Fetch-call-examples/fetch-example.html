@@ -1,0 +1,17 @@
+<html>
+  <head> </head>
+  <body>
+    <script>
+      const getPersonData = async () => {
+        const personResponse = await fetch(
+          `https://fakerapi.it/api/v1/persons`
+        );
+        const res = await personResponse.json();
+        const { code, data, status, total } = res;
+        document.getElementById("userdata").innerHTML = JSON.stringify(data);
+      };
+    </script>
+    <button onclick="getPersonData()">Click Here</button>
+    <div id="userdata"></div>
+  </body>
+</html>
